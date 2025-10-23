@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mind</title>
+    <title>Confidence Test</title>
     <style>
         * {
             margin: 0;
@@ -63,7 +63,7 @@
 
         input[type="text"],
         input[type="tel"],
-        input[type="number"] {
+        textarea {
             width: 100%;
             padding: 12px 14px;
             font-size: 1rem;
@@ -74,9 +74,64 @@
             font-family: inherit;
         }
 
-        input:focus {
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        input:focus,
+        textarea:focus {
             border-color: #6b6b6b;
             background: #fff;
+        }
+
+        .slider-container {
+            margin-top: 10px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            background: #e8e4dd;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            margin: 15px 0;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #2d2d2d;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #2d2d2d;
+            cursor: pointer;
+            border-radius: 50%;
+            border: none;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #7a7a7a;
+            margin-top: 5px;
+        }
+
+        .slider-value {
+            text-align: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d2d2d;
+            margin-bottom: 10px;
         }
 
         .btn {
@@ -137,28 +192,6 @@
 
         .page.active {
             display: block;
-        }
-
-        .progress-bar-container {
-            width: 100%;
-            height: 3px;
-            background: #e8e4dd;
-            margin-bottom: 16px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: #2d2d2d;
-            transition: width 0.3s ease;
-        }
-
-        .progress-text {
-            color: #7a7a7a;
-            margin-bottom: 32px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
         }
 
         .task-question {
@@ -228,8 +261,8 @@
     <div class="container">
         <!-- Landing Page -->
         <div id="landing-page" class="page active">
-            <h1>Mind</h1>
-            <h2>We'll give you 10 short thinking tasks to see how your mind works!</h2>
+            <h1>Confidence Test</h1>
+            <h2>Let's explore how your confidence changes when you explain something!</h2>
             
             <div class="form-group">
                 <label for="name">Name</label>
@@ -246,68 +279,96 @@
             <button class="btn" onclick="startTest()">Start Test</button>
         </div>
 
-        <!-- Tasks Page -->
-        <div id="tasks-page" class="page">
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-            <div class="progress-text" id="progress-text">Task 1 of 10</div>
-            
-            <div class="task-question" id="task-question"></div>
+        <!-- Question 1: Initial Confidence -->
+        <div id="question1-page" class="page">
+            <div class="task-question">How confident are you in knowing why we laugh at jokes?</div>
             
             <div class="form-group">
-                <input type="number" id="task-answer" placeholder="Enter your answer" required>
-                <div class="error-message" id="task-error">Please enter a valid number</div>
+                <div class="slider-value" id="confidence1-value">50</div>
+                <div class="slider-container">
+                    <input type="range" id="confidence1" min="0" max="100" value="50" oninput="updateSlider1(this.value)">
+                    <div class="slider-labels">
+                        <span>Not confident at all</span>
+                        <span>Very confident</span>
+                    </div>
+                </div>
             </div>
             
-            <button class="btn" onclick="nextTask()">Next</button>
+            <button class="btn" onclick="nextToExplanation()">Next</button>
+        </div>
+
+        <!-- Question 2: Explanation -->
+        <div id="question2-page" class="page">
+            <div class="task-question">Explain why we laugh at jokes</div>
+            
+            <div class="form-group">
+                <textarea id="explanation" placeholder="Type your explanation here..." required></textarea>
+                <div class="error-message" id="explanation-error">Please provide an explanation</div>
+            </div>
+            
+            <button class="btn" onclick="nextToFinalConfidence()">Next</button>
+        </div>
+
+        <!-- Question 3: Final Confidence -->
+        <div id="question3-page" class="page">
+            <div class="task-question">How confident are you now about knowing why we laugh at jokes?</div>
+            
+            <div class="form-group">
+                <div class="slider-value" id="confidence2-value">50</div>
+                <div class="slider-container">
+                    <input type="range" id="confidence2" min="0" max="100" value="50" oninput="updateSlider2(this.value)">
+                    <div class="slider-labels">
+                        <span>Not confident at all</span>
+                        <span>Very confident</span>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="submitData()">Submit</button>
         </div>
 
         <!-- Thank You Page -->
         <div id="thank-you-page" class="page">
             <div class="thank-you">
                 <h1>Thank You! 😄</h1>
-                <p>Thanks for participating! Your mind is amazing 😄</p>
-                <p style="margin-top: 20px; font-size: 1rem; color: #999;">Your responses have been submitted successfully.</p>
+                <p>Thanks for participating! Interesting how confidence changes, isn't it?</p>
+                <p>Your responses have been submitted successfully.</p>
             </div>
-            <a href="confidence.html" style="text-decoration: none;">
-                <button class="btn" style="margin-top: 30px;">Try Another Challenge</button>
-            </a>
+            
+            <div style="margin-top: 40px; padding: 25px; background: #fafaf9; border-left: 3px solid #2d2d2d;">
+                <h3 style="font-size: 1.1rem; color: #1a1a1a; margin-bottom: 12px; font-weight: 600;">Why do we actually laugh at jokes?</h3>
+                <p style="font-size: 0.95rem; color: #4a4a4a; line-height: 1.7; margin-bottom: 12px;">
+                    Laughter often comes from surprise or incongruity: the punchline violates expectations in a safe way.
+                </p>
+                <p style="font-size: 0.95rem; color: #4a4a4a; line-height: 1.7;">
+                    Your brain notices the mismatch between what you expected and what actually happens, and laughter is a response.
+                </p>
+            </div>
         </div>
     </div>
 
     <script>
         // User data storage
         let userData = {
+            type: 'confi',
             name: '',
             phone: '',
-            task1: '',
-            task2: '',
-            task3: '',
-            task4: '',
-            task5: '',
-            task6: '',
-            task7: '',
-            task8: '',
-            task9: '',
-            task10: ''
+            task1: '50',  // Initial confidence
+            task2: '',     // Explanation
+            task3: '50'    // Final confidence
         };
 
-        // Task questions
-        const tasks = [
-            "How many thoughts can you hold at once before it feels chaotic?",
-            "How many minutes would it take you to get bored just sitting quietly?",
-            "Out of 10 times, how often would you pick a guaranteed reward over a risky bigger reward?",
-            "How many times a day do you catch yourself daydreaming?",
-            "Out of 100 people, how many do you think lie daily?",
-            "How many unusual uses can you think of for a brick in 2 minutes?",
-            "How many seconds does it feel like 1 minute passes when you are bored?",
-            "How many close friends do you think truly understand you?",
-            "On a scale of 1–100, how much of your day is controlled by your own choice vs outside events?",
-            "How many new ideas can you generate in 5 minutes without repeating yourself?"
-        ];
+        // Update slider 1 value display
+        function updateSlider1(value) {
+            document.getElementById('confidence1-value').textContent = value;
+            userData.task1 = value;
+        }
 
-        let currentTask = 0;
+        // Update slider 2 value display
+        function updateSlider2(value) {
+            document.getElementById('confidence2-value').textContent = value;
+            userData.task3 = value;
+        }
 
         // Start the test
         function startTest() {
@@ -340,67 +401,46 @@
             userData.name = name;
             userData.phone = phone;
 
-            // Show tasks page
-            showPage('tasks-page');
-            loadTask();
+            // Show first question
+            showPage('question1-page');
         }
 
-        // Load current task
-        function loadTask() {
-            document.getElementById('task-question').textContent = tasks[currentTask];
-            document.getElementById('task-answer').value = '';
-            document.getElementById('task-error').classList.remove('show');
-            
-            // Update progress
-            const progress = ((currentTask + 1) / tasks.length) * 100;
-            document.getElementById('progress-bar').style.width = progress + '%';
-            document.getElementById('progress-text').textContent = `Task ${currentTask + 1} of ${tasks.length}`;
-            
-            // Update button text for last task
-            const btn = document.querySelector('#tasks-page .btn');
-            if (currentTask === tasks.length - 1) {
-                btn.textContent = 'Submit';
-            } else {
-                btn.textContent = 'Next';
-            }
+        // Move to explanation page
+        function nextToExplanation() {
+            userData.task1 = document.getElementById('confidence1').value;
+            showPage('question2-page');
         }
 
-        // Move to next task
-        function nextTask() {
-            const answer = document.getElementById('task-answer').value.trim();
-            const taskError = document.getElementById('task-error');
+        // Move to final confidence page
+        function nextToFinalConfidence() {
+            const explanation = document.getElementById('explanation').value.trim();
+            const explanationError = document.getElementById('explanation-error');
 
-            // Validate answer
-            if (answer === '' || isNaN(answer)) {
-                taskError.classList.add('show');
+            if (explanation === '') {
+                explanationError.classList.add('show');
                 return;
             } else {
-                taskError.classList.remove('show');
+                explanationError.classList.remove('show');
             }
 
-            // Store answer
-            userData[`task${currentTask + 1}`] = answer;
-
-            // Move to next task or submit
-            if (currentTask < tasks.length - 1) {
-                currentTask++;
-                loadTask();
-            } else {
-                submitData();
-            }
+            userData.task2 = explanation;
+            showPage('question3-page');
         }
 
         // Submit data to Google Apps Script
         async function submitData() {
-            const btn = document.querySelector('#tasks-page .btn');
+            const btn = document.querySelector('#question3-page .btn');
             const originalText = btn.textContent;
             
             // Show loading state
             btn.classList.add('loading');
             btn.textContent = 'Submitting...';
             
+            // Update final confidence value
+            userData.task3 = document.getElementById('confidence2').value;
+            
             try {
-                const url = 'https://script.google.com/macros/s/AKfycbz9tGtYAziBCAhNTptoCUXWgsZCjBUQF6j32yteGRQk4Z5NGOwcCjVla_volW2LrHnY/exec';
+                const url = 'https://script.google.com/macros/s/AKfycbwQQGw4fCMBkFJ8I4wYmH1qqmv434L9_8olkyn9XS4wSaCi3Ns5NH7fWIauWXXNqnDw/exec';
                 
                 const response = await fetch(url, {
                     method: 'POST',
@@ -411,7 +451,7 @@
                     body: JSON.stringify(userData)
                 });
 
-                // Small delay to show loading (minimum 800ms)
+                // Small delay to show loading
                 await new Promise(resolve => setTimeout(resolve, 800));
 
                 // Show thank you page
@@ -435,14 +475,10 @@
             document.getElementById(pageId).classList.add('active');
         }
 
-        // Allow Enter key to submit
+        // Allow Enter key to submit on landing page
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('phone').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') startTest();
-            });
-
-            document.getElementById('task-answer').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') nextTask();
             });
         });
     </script>
