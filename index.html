@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mind Chaos Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f3ef;
+            min-height: 100vh;
+            padding: 30px 15px;
+        }
+
+        .container {
+            background: #fff;
+            max-width: 520px;
+            margin: 0 auto;
+            padding: 45px 35px;
+            border: 1px solid #e8e4dd;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #1a1a1a;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        h2 {
+            font-size: 1.05rem;
+            color: #5a5a5a;
+            margin-bottom: 35px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: #2a2a2a;
+            margin-bottom: 7px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 14px;
+            font-size: 1rem;
+            border: 1.5px solid #d4d0c8;
+            background: #fafaf9;
+            transition: border 0.2s;
+            outline: none;
+            font-family: inherit;
+        }
+
+        input:focus {
+            border-color: #6b6b6b;
+            background: #fff;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            background: #2d2d2d;
+            border: none;
+            cursor: pointer;
+            margin-top: 18px;
+            letter-spacing: 0.3px;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: #1a1a1a;
+        }
+
+        .btn:active {
+            background: #000;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn.loading {
+            opacity: 0.7;
+            pointer-events: none;
+            position: relative;
+        }
+
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            right: 20px;
+            margin-top: -8px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spinner 0.6s linear infinite;
+        }
+
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 3px;
+            background: #e8e4dd;
+            margin-bottom: 16px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #2d2d2d;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            color: #7a7a7a;
+            margin-bottom: 32px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .task-question {
+            font-size: 1.4rem;
+            color: #1a1a1a;
+            margin-bottom: 28px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .thank-you h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .thank-you p {
+            font-size: 1.1rem;
+            color: #5a5a5a;
+            line-height: 1.6;
+        }
+
+        .thank-you p:last-child {
+            margin-top: 24px;
+            font-size: 0.95rem;
+            color: #999;
+        }
+
+        .error-message {
+            color: #c93030;
+            font-size: 0.85rem;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 15px;
+            }
+
+            .container {
+                padding: 35px 25px;
+            }
+
+            h1 {
+                font-size: 1.9rem;
+            }
+
+            h2 {
+                font-size: 0.95rem;
+            }
+
+            .task-question {
+                font-size: 1.2rem;
+            }
+
+            .thank-you h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Landing Page -->
+        <div id="landing-page" class="page active">
+            <h1>Mind Chaos Test</h1>
+            <h2>We'll give you 10 short thinking tasks to see how your mind works!</h2>
+            
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" placeholder="Enter your name" required>
+                <div class="error-message" id="name-error">Please enter your name</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" placeholder="Enter your phone number" required pattern="[0-9]*">
+                <div class="error-message" id="phone-error">Please enter a valid phone number</div>
+            </div>
+            
+            <button class="btn" onclick="startTest()">Start Test</button>
+        </div>
+
+        <!-- Tasks Page -->
+        <div id="tasks-page" class="page">
+            <div class="progress-bar-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Task 1 of 10</div>
+            
+            <div class="task-question" id="task-question"></div>
+            
+            <div class="form-group">
+                <input type="number" id="task-answer" placeholder="Enter your answer" required>
+                <div class="error-message" id="task-error">Please enter a valid number</div>
+            </div>
+            
+            <button class="btn" onclick="nextTask()">Next</button>
+        </div>
+
+        <!-- Thank You Page -->
+        <div id="thank-you-page" class="page">
+            <div class="thank-you">
+                <h1>Thank You! 😄</h1>
+                <p>Thanks for participating! Your mind is amazing 😄</p>
+                <p style="margin-top: 20px; font-size: 1rem; color: #999;">Your responses have been submitted successfully.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // User data storage
+        let userData = {
+            name: '',
+            phone: '',
+            task1: '',
+            task2: '',
+            task3: '',
+            task4: '',
+            task5: '',
+            task6: '',
+            task7: '',
+            task8: '',
+            task9: '',
+            task10: ''
+        };
+
+        // Task questions
+        const tasks = [
+            "How many thoughts can you hold at once before it feels chaotic?",
+            "How many minutes would it take you to get bored just sitting quietly?",
+            "Out of 10 times, how often would you pick a guaranteed reward over a risky bigger reward?",
+            "How many times a day do you catch yourself daydreaming?",
+            "Out of 100 people, how many do you think lie daily?",
+            "How many unusual uses can you think of for a brick in 2 minutes?",
+            "How many seconds does it feel like 1 minute passes when you are bored?",
+            "How many close friends do you think truly understand you?",
+            "On a scale of 1–100, how much of your day is controlled by your own choice vs outside events?",
+            "How many new ideas can you generate in 5 minutes without repeating yourself?"
+        ];
+
+        let currentTask = 0;
+
+        // Start the test
+        function startTest() {
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const nameError = document.getElementById('name-error');
+            const phoneError = document.getElementById('phone-error');
+
+            let isValid = true;
+
+            // Validate name
+            if (name === '') {
+                nameError.classList.add('show');
+                isValid = false;
+            } else {
+                nameError.classList.remove('show');
+            }
+
+            // Validate phone
+            if (phone === '' || !/^[0-9]+$/.test(phone)) {
+                phoneError.classList.add('show');
+                isValid = false;
+            } else {
+                phoneError.classList.remove('show');
+            }
+
+            if (!isValid) return;
+
+            // Store user data
+            userData.name = name;
+            userData.phone = phone;
+
+            // Show tasks page
+            showPage('tasks-page');
+            loadTask();
+        }
+
+        // Load current task
+        function loadTask() {
+            document.getElementById('task-question').textContent = tasks[currentTask];
+            document.getElementById('task-answer').value = '';
+            document.getElementById('task-error').classList.remove('show');
+            
+            // Update progress
+            const progress = ((currentTask + 1) / tasks.length) * 100;
+            document.getElementById('progress-bar').style.width = progress + '%';
+            document.getElementById('progress-text').textContent = `Task ${currentTask + 1} of ${tasks.length}`;
+            
+            // Update button text for last task
+            const btn = document.querySelector('#tasks-page .btn');
+            if (currentTask === tasks.length - 1) {
+                btn.textContent = 'Submit';
+            } else {
+                btn.textContent = 'Next';
+            }
+        }
+
+        // Move to next task
+        function nextTask() {
+            const answer = document.getElementById('task-answer').value.trim();
+            const taskError = document.getElementById('task-error');
+
+            // Validate answer
+            if (answer === '' || isNaN(answer)) {
+                taskError.classList.add('show');
+                return;
+            } else {
+                taskError.classList.remove('show');
+            }
+
+            // Store answer
+            userData[`task${currentTask + 1}`] = answer;
+
+            // Move to next task or submit
+            if (currentTask < tasks.length - 1) {
+                currentTask++;
+                loadTask();
+            } else {
+                submitData();
+            }
+        }
+
+        // Submit data to Google Apps Script
+        async function submitData() {
+            const btn = document.querySelector('#tasks-page .btn');
+            const originalText = btn.textContent;
+            
+            // Show loading state
+            btn.classList.add('loading');
+            btn.textContent = 'Submitting...';
+            
+            try {
+                const url = 'https://script.google.com/macros/s/AKfycbz9tGtYAziBCAhNTptoCUXWgsZCjBUQF6j32yteGRQk4Z5NGOwcCjVla_volW2LrHnY/exec';
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                // Small delay to show loading (minimum 800ms)
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                // Show thank you page
+                showPage('thank-you-page');
+            } catch (error) {
+                console.error('Error submitting data:', error);
+                // Still show thank you page even if submission fails
+                await new Promise(resolve => setTimeout(resolve, 800));
+                showPage('thank-you-page');
+            } finally {
+                // Remove loading state
+                btn.classList.remove('loading');
+                btn.textContent = originalText;
+            }
+        }
+
+        // Show specific page
+        function showPage(pageId) {
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+
+        // Allow Enter key to submit
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('phone').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') startTest();
+            });
+
+            document.getElementById('task-answer').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') nextTask();
+            });
+        });
+    </script>
+</body>
+</html>
+
